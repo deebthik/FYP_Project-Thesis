@@ -1,0 +1,292 @@
+name: "network_supplychain.com"
+
+version: "1.0"
+
+client:
+  organization: FarmInspector
+  logging:
+    level: info
+
+  cryptoconfig:
+    path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config
+
+  credentialStore:
+    path: /tmp/supplychain-store
+
+    cryptoStore:
+      path: /tmp/supplychain-msp
+
+  BCCSP:
+    security:
+      enabled: true
+      default:
+        provider: "SW"
+      hashAlgorithm: "SHA2"
+      softVerify: true
+      level: 256
+
+  tlsCerts:
+    systemCertPool: true
+
+channels:
+  scchannel:
+    orderers:
+      - orderer1.supplychain.com
+      - orderer2.supplychain.com
+      - orderer3.supplychain.com
+
+    peers:
+      peer0.farminspector.supplychain.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+    policies:
+      queryChannelConfig:
+        minResponses: 1
+        maxTargets: 1
+        retryOpts:
+          attempts: 5
+          initialBackoff: 1000ms
+          maxBackoff: 10s
+          backoffFactor: 2.0
+
+organizations:
+  FarmInspector:
+    mspid: FarmInspectorMSP
+    cryptopath: peerOrganizations/farminspector.supplychain.com/users/Admin@farminspector.supplychain.com/msp
+    peers:
+      - peer0.farminspector.supplychain.com
+      - peer1.farminspector.supplychain.com
+
+  Harvester:
+    mspid: HarvesterMSP
+    cryptopath: peerOrganizations/harvester.supplychain.com/users/Admin@harvester.supplychain.com/msp
+    peers:
+      - peer0.harvester.supplychain.com
+      - peer1.harvester.supplychain.com
+
+  Exporter:
+    mspid: ExporterMSP
+    cryptopath: peerOrganizations/exporter.supplychain.com/users/Admin@exporter.supplychain.com/msp
+    peers:
+      - peer0.exporter.supplychain.com
+      - peer1.exporter.supplychain.com
+
+  Importer:
+    mspid: ImporterMSP
+    cryptopath: peerOrganizations/importer.supplychain.com/users/Admin@importer.supplychain.com/msp
+    peers:
+      - peer0.importer.supplychain.com
+      - peer1.importer.supplychain.com
+
+  Processor:
+    mspid: ProcessorMSP
+    cryptopath: peerOrganizations/processor.supplychain.com/users/Admin@processor.supplychain.com/msp
+    peers:
+      - peer0.processor.supplychain.com
+      - peer1.processor.supplychain.com
+
+orderers:
+  _default:
+    grpcOptions:
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+  orderer1.supplychain.com:
+    url: grpc://localhost:7050
+    grpcOptions:
+      ssl-target-name-override: orderer1.supplychain.com
+      grpc-max-send-message-length: 10000
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/ordererOrganizations/supplychain.com/msp/tlscacerts/tlsca.supplychain.com-cert.pem
+
+  orderer2.supplychain.com:
+    url: grpc://localhost:8050
+    grpcOptions:
+      ssl-target-name-override: orderer2.supplychain.com
+      grpc-max-send-message-length: 10000
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/ordererOrganizations/supplychain.com/msp/tlscacerts/tlsca.supplychain.com-cert.pem
+
+  orderer3.supplychain.com:
+    url: grpc://localhost:9050
+    grpcOptions:
+      ssl-target-name-override: orderer3.supplychain.com
+      grpc-max-send-message-length: 10000
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/ordererOrganizations/supplychain.com/msp/tlscacerts/tlsca.supplychain.com-cert.pem
+
+peers:
+  _default:
+    grpcOptions:
+      keep-alive-time: 1s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
+  peer0.farminspector.supplychain.com:
+    url: grpcs://localhost:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.farminspector.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/farminspector.supplychain.com/msp/tlscacerts/tlsca.farminspector.supplychain.com-cert.pem
+
+  peer1.farminspector.supplychain.com:
+    url: grpcs://localhost:8051
+    grpcOptions:
+      ssl-target-name-override: peer1.farminspector.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/farminspector.supplychain.com/msp/tlscacerts/tlsca.farminspector.supplychain.com-cert.pem
+
+  peer0.harvester.supplychain.com:
+    url: grpcs://localhost:9051
+    grpcOptions:
+      ssl-target-name-override: peer0.harvester.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/harvester.supplychain.com/msp/tlscacerts/tlsca.harvester.supplychain.com-cert.pem
+
+  peer1.harvester.supplychain.com:
+    url: grpcs://localhost:10051
+    grpcOptions:
+      ssl-target-name-override: peer1.harvester.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/harvester.supplychain.com/msp/tlscacerts/tlsca.harvester.supplychain.com-cert.pem
+
+  peer0.exporter.supplychain.com:
+    url: grpcs://localhost:11051
+    grpcOptions:
+      ssl-target-name-override: peer0.exporter.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/exporter.supplychain.com/msp/tlscacerts/tlsca.exporter.supplychain.com-cert.pem
+
+  peer1.exporter.supplychain.com:
+    url: grpcs://localhost:12051
+    grpcOptions:
+      ssl-target-name-override: peer1.exporter.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/exporter.supplychain.com/msp/tlscacerts/tlsca.exporter.supplychain.com-cert.pem
+
+  peer0.importer.supplychain.com:
+    url: grpcs://localhost:13051
+    grpcOptions:
+      ssl-target-name-override: peer0.importer.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/importer.supplychain.com/msp/tlscacerts/tlsca.importer.supplychain.com-cert.pem
+
+  peer1.importer.supplychain.com:
+    url: grpcs://localhost:14051
+    grpcOptions:
+      ssl-target-name-override: peer1.importer.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/importer.supplychain.com/msp/tlscacerts/tlsca.importer.supplychain.com-cert.pem
+
+  peer0.processor.supplychain.com:
+    url: grpcs://localhost:15051
+    grpcOptions:
+      ssl-target-name-override: peer0.processor.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/processor.supplychain.com/msp/tlscacerts/tlsca.processor.supplychain.com-cert.pem
+
+  peer1.processor.supplychain.com:
+    url: grpcs://localhost:16051
+    grpcOptions:
+      ssl-target-name-override: peer1.processor.supplychain.com
+      grpc.http2.keepalive_time: 15
+
+    tlsCACerts:
+      path: /home/sashank/Documents/Projects/FYP/coffee-supply-chain/network/crypto-config/peerOrganizations/processor.supplychain.com/msp/tlscacerts/tlsca.processor.supplychain.com-cert.pem
+
+entityMatchers:
+  peer:
+    - pattern: (\w*)peer0.farminspector.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:7051
+      sslTargetOverrideUrlSubstitutionExp: peer0.farminspector.supplychain.com
+      mappedHost: peer0.farminspector.supplychain.com
+
+    - pattern: (\w*)peer1.farminspector.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:8051
+      sslTargetOverrideUrlSubstitutionExp: peer1.farminspector.supplychain.com
+      mappedHost: peer1.farminspector.supplychain.com
+
+    - pattern: (\w*)peer0.harvester.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:9051
+      sslTargetOverrideUrlSubstitutionExp: peer0.harvester.supplychain.com
+      mappedHost: peer0.harvester.supplychain.com
+
+    - pattern: (\w*)peer1.harvester.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:10051
+      sslTargetOverrideUrlSubstitutionExp: peer1.harvester.supplychain.com
+      mappedHost: peer1.harvester.supplychain.com
+
+    - pattern: (\w*)peer0.exporter.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:11051
+      sslTargetOverrideUrlSubstitutionExp: peer0.exporter.supplychain.com
+      mappedHost: peer0.exporter.supplychain.com
+
+    - pattern: (\w*)peer1.exporter.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:12051
+      sslTargetOverrideUrlSubstitutionExp: peer1.exporter.supplychain.com
+      mappedHost: peer1.exporter.supplychain.com
+
+    - pattern: (\w*)peer0.importer.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:13051
+      sslTargetOverrideUrlSubstitutionExp: peer0.importer.supplychain.com
+      mappedHost: peer0.importer.supplychain.com
+
+    - pattern: (\w*)peer1.importer.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:14051
+      sslTargetOverrideUrlSubstitutionExp: peer1.importer.supplychain.com
+      mappedHost: peer1.importer.supplychain.com
+
+    - pattern: (\w*)peer0.processor.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:15051
+      sslTargetOverrideUrlSubstitutionExp: peer0.processor.supplychain.com
+      mappedHost: peer0.processor.supplychain.com
+
+    - pattern: (\w*)peer1.processor.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:16051
+      sslTargetOverrideUrlSubstitutionExp: peer1.processor.supplychain.com
+      mappedHost: peer1.processor.supplychain.com
+
+  orderer:
+    - pattern: (\w*)orderer1.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:7050
+      sslTargetOverrideUrlSubstitutionExp: orderer1.supplychain.com
+      mappedHost: orderer1.supplychain.com
+
+    - pattern: (\w*)orderer2.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:8050
+      sslTargetOverrideUrlSubstitutionExp: orderer2.supplychain.com
+      mappedHost: orderer2.supplychain.com
+
+    - pattern: (\w*)orderer3.supplychain.com(\w*)
+      urlSubstitutionExp: localhost:9050
+      sslTargetOverrideUrlSubstitutionExp: orderer3.supplychain.com
+      mappedHost: orderer3.supplychain.com

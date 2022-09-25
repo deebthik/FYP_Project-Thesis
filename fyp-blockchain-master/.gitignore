@@ -1,0 +1,8 @@
+crypto-config/
+channel-artifacts/
+state/
+chaincode/github.com/
+chaincode/supplycc/vendor/
+chaincode/supplycc/go.sum
+prometheus/data/
+prometheus.sh
